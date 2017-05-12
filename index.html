@@ -1,0 +1,149 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Effizientere Unit Test Fixtures</title>
+
+		<link rel="stylesheet" href="css/reveal.css">1
+		<link rel="stylesheet" href="css/theme/black.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+
+				<section>
+					<h2>Effizientere Unit Test Fixtures</h2>
+					<p>
+						<a href="https://github.com/casid">Andreas Hager</a><br/>
+						Java Dev at <a href="http://www.chrono24.com/">Chrono24</a>
+					</p>
+				</section>
+
+				<section>
+					<h2>Agenda</h2>
+					<p class="fragment">Test Fixtures?</p>
+					<p class="fragment">Builders &amp; Trainers</p>
+				</section>
+
+				<section>
+					<section>
+						<h2>Test Fixtures?</h2>
+					</section>
+					<section>
+						<h3>Arrange, Act, Assert</h3>
+						<ul>
+							<li>Auch bekannt als Given, When, Then</li>
+							<li>Ein guter Unit Test besteht aus diesen drei Schritten</li>
+							<li>Nicht mehr - ansonsten wird's schnell unübersichtlich</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Gut</h3>
+						<pre><code class="java">@Test
+public void invalidEmail() {
+   givenEmail("notanemail");
+   whenSubscriptionIsSent();
+   thenValidationFails("Please enter a valid email address.");
+}</code></pre>
+					</section>
+					<section>
+						<h3>Nicht gut</h3>
+						<pre><code class="java">@Test(expected = NullPointerException.class)
+public void email() {
+   givenEmail("notanemail");
+   whenSubscriptionIsSent();
+   thenValidationFails("Please enter a valid email address.");
+   givenEmail("email@gmail.com");
+   whenSubscriptionIsSent();
+   thenValidationSucceeds();
+   // ...
+   givenEmail(null);
+   whenSubscriptionIsSent();
+}</code></pre>
+					</section>
+					<section>
+						<h3>Aufgabe von Arrange</h3>
+						<ul>
+							<li>Unit Under Test in den Zustand versetzen, so dass Act/Assert möglich ist</li>
+							<li>In der Regel der größte Aufwand beim Schreiben eines Unit Tests</li>
+							<li>Den wollen wir reduzieren!</li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Builders &amp; Trainers</h2>
+					</section>
+
+					<section>
+						<h3>Coding Session</h3>
+						<img src="img/rick.gif" />
+					</section>
+
+					<section>
+						<h3>Links</h3>
+
+							<small>Builders: <a href="https://github.com/casid/jusecase-builders">https://github.com/casid/jusecase-builders</a></small>
+							<br/>
+							<small>Präsentation: <a href="https://github.com/chrono24/devcamp-karlsruhe-2017">https://github.com/chrono24/devcamp-karlsruhe-2017</a></small>
+							<small>Coding Session: <a href="https://github.com/chrono24/builders-trainers">https://github.com/chrono24/builders-trainers</a></small>
+						</small>
+					</section>
+
+				</section>
+
+				<section>
+						<pre><code class="java">@Test
+public void thankYou() {
+   givenSpeaker(a(speaker()));
+   whenSessionEnds();
+   thenSpeakerSays("Vielen Dank für eure Aufmerksamkeit!");
+}</code></pre>
+<pre class="fragment"><code class="java">@Test
+public void ps() {
+   givenSpeaker(a(speaker().withEmail("andreas@chrono24.com")));
+   whenSessionEnds();
+   thenSpeakerSays("We're hiring! ;-)");
+}</code></pre>
+						<small class="fragment">
+							<a href="https://about.chrono24.com/jobs">about.chrono24.com/jobs</a><br/>
+						</small>
+				</section>
+
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				history: true,
+
+				// More info https://github.com/hakimel/reveal.js#dependencies
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
